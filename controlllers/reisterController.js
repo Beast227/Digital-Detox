@@ -4,7 +4,7 @@ const User = require('../models/User')
 
 const handleNewUser = async (req, res) => {
     const { username, password, email} = req.body;
-    if(!username?.trim() || !password?.trim() || !email?.trim()) return res.sendStatus(400).json( { message : 'Username password and email are required.'} )
+    if(!username?.trim() || !password?.trim() || !email?.trim()) return res.status(400).json( { message : 'Username password and email are required.'} )
     
     
     //check for duplicate usernames in the db

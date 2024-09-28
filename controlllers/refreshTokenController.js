@@ -3,7 +3,7 @@ const User = require('../models/User')
 
 const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies
-    if(!cookies?.jwt) return res.sendStatus(401).json({message: "Cookies are not found"}) // No content
+    if(!cookies?.jwt) return res.status(401).json({message: "Cookies are not found"}) // No content
     const refreshToken = cookies.jwt
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
 
