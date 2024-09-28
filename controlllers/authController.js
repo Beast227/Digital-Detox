@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const handleLogin = async (req, res) => {
     const cookies = req.cookies
     const { username, password } = req.body;
-    if(!username || !password) return res.sendStatus(400).json( {"message" : "Username and password are required."})
+    if(!username || !password) return res.sendStatus(400).json( { message : "Username and password are required."})
     
     const foundUser = await User.findOne({
         username: username 
