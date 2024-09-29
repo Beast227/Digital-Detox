@@ -4,7 +4,7 @@ const User = require('../models/User')
 
 const handleNewUser = async (req, res) => {
     const { username, password, email} = req.body;
-    if(!username?.trim() || !password?.trim() || !email?.trim()) return res.status(400).json( { message : 'Username password and email are required.'} )
+    if(!username?.trim() || !password?.trim() || !email?.trim()) return res.status(400).json( { 'message' : 'Username password and email are required.'} )
     
     
     //check for duplicate usernames in the db
@@ -12,7 +12,7 @@ const handleNewUser = async (req, res) => {
         User.findOne({ username: username }).exec(),
         User.findOne({ email: email }).exec()
     ]);
-    if(duplicateUsername || duplicateEmail) return res.sendStatus(409) // conflict
+    if(duplicateUsername || duplicateEmail) return res.send(409).json({ 'message' : 'Username or email is already in use'}) // conflict
 
     try {
         // Encrypt the password

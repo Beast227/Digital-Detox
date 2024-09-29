@@ -2,8 +2,8 @@ const User = require("../models/User");
 const bcrypt = require('bcrypt')
 
 const handleForgotPassword = async (req, res) => {
-    const { username, email, newPassword } = req.body;
-    if(!username?.trim() || !newPassword?.trim() || !email?.trim()) return res.status(400).json( { message : 'Username password and email are required.'} )
+    const { email, newPassword } = req.body;
+    if( !newPassword?.trim() || !email?.trim() ) return res.status(400).json( { message : 'Email password and email are required.'} )
 
     try {
         // Encrypt the password
@@ -11,7 +11,7 @@ const handleForgotPassword = async (req, res) => {
 
         // Update the password for the foundUser
         const updatedUser = await User.findOneAndUpdate({
-            username: username.trim(),
+            email: email.trim(),
             $set: { password : hashedPwd }
         })
         if(!updatedUser) return res.sendStatus(409)

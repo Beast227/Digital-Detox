@@ -4,11 +4,11 @@ const bcrypt = require('bcrypt')
 
 const handleLogin = async (req, res) => {
     const cookies = req.cookies
-    const { username, password } = req.body;
-    if(!username || !password) return res.status(400).json( { message : "Username and password are required."})
+    const { username, email, password } = req.body;
+    if((!username && !email) || !password) return res.status(400).json( { message : "Username and password are required."})
     
     const foundUser = await User.findOne({
-        username: username 
+        $or: [ {username: username}, {email: email} ]
     }).exec()
     
     if(!foundUser) return res.status(401) // Unauthorized
@@ -61,7 +61,7 @@ const handleLogin = async (req, res) => {
         console.log(result)
 
         // Create secure cookie with refresh token
-        res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, secure: true}) // secure: true should be used in production
+        res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 }) // secure: true should be used in production
 
         // Send access token to user
         res.json({ accessToken })
