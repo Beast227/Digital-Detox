@@ -3,7 +3,6 @@ const Schema = mongoose.Schema
 
 const surveySchema = new Schema ({
     responses: [{
-        question: { type: String, required: true },
         answer: { type: String, required: true }
     }],
     user: {

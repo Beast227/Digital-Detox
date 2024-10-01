@@ -4,5 +4,6 @@ const router = express.Router()
 
 router
 .post('/', surveyController.handleSurveyDetails)
+.get('/', surveyController.getSurveyDetails)
 
 module.exports = router
