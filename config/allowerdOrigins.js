@@ -1,7 +1,7 @@
 const allowedOrigins = [
     'http://localhost:3500', 
-    'https://www.yoursite.com',
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://yash29739.github.io/'
 ]
 
 module.exports = allowedOrigins
