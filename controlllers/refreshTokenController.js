@@ -26,7 +26,7 @@ const handleRefreshToken = async (req, res) => {
         return res.sendStatus(403) // forbidden
     }
 
-    const newRefreshTokenArray = foundUser.refreshToken.filter(rt => rt !== refreshToken)
+    const newRefreshTokenArray = foundUser.refreshToken.filter(rt => rt.trim() !== refreshToken)
     
     // evaluate jwt
     jwt.verify(
@@ -35,7 +35,7 @@ const handleRefreshToken = async (req, res) => {
         async (err, decoded) => {
             if(err) {
                 console.log('Expired refresh token')
-                foundUser.refreshToken = [...newRefreshTokenArray]
+                foundUser.refreshToken = newRefreshTokenArray
                 const result = await foundUser.save()
                 console.log(result)
             }
@@ -56,7 +56,7 @@ const handleRefreshToken = async (req, res) => {
             const newRefreshToken = jwt.sign(
                 { "username" : foundUser.username },
                 process.env.REFRESH_TOKEN_SECRET,
-                { expiresIn : '1d' }
+                { expiresIn : '7d' }
             )
     
             // Saving rereshToken with current user
@@ -66,13 +66,12 @@ const handleRefreshToken = async (req, res) => {
 
             
             // Create secure cookie with refresh token
-            res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000, secure: true }) // secure: true should be used in production
+            res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 }) // secure: true should be used in production
 
 
             res.json({ accessToken })
         }
-    )
-    
+    ) 
 }
 
 module.exports = { handleRefreshToken }
