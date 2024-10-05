@@ -1,7 +1,7 @@
 const allowedOrigins = [
     'http://localhost:3500', 
     'http://localhost:3000',
-    'https://yash29739.github.io'
+    'https://digitaldetoxer.netlify.app'
 ]
 
 module.exports = allowedOrigins
