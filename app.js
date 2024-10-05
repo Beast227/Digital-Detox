@@ -34,6 +34,7 @@ app.use('/auth', require('./routes/auth'))
 app.use('/refresh', require('./routes/refresh'))
 app.use('/logout', require('./routes/logout'))
 app.use('/survey', require('./routes/api/survery'))
+app.use('/updateSurvey', require('./routes/api/updatesurvey'))
 app.use('/forgotPassword', require('./routes/api/updatePassword'))
 app.use('/logOutAllSessions', require('./routes/api/logOutAllSession'))
 
