@@ -2,12 +2,38 @@ const mongoose  = require("mongoose")
 const Schema = mongoose.Schema
 
 const surveySchema = new Schema ({
-    responses: [
-        {
-            _id: false,
-            answer: { type: String, required: true }
-        }
-    ],
+    responses: {
+        activityPriority: [{
+            type: String
+        }],
+        challengingTask: [{
+            type: String
+        }],
+        primaryGoal: [{
+            type: String
+        }],
+        screenActivity: [{
+            type: String
+        }],
+        screenTime: [{
+            type: String
+        }],
+        socialMediaStrategy: [{
+            type: String
+        }],
+        socialMediaTime: [{
+            type: String
+        }],
+        whatHelp: [{
+            type: String
+        }],
+        workScreenTime: [{
+            type: String
+        }],
+        workTimeBreaks: [{
+            type: String
+        }],
+    },
     user: {
         type: Schema.Types.ObjectId,
         required: true
