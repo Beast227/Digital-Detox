@@ -66,7 +66,7 @@ const handleRefreshToken = async (req, res) => {
 
             
             // Create secure cookie with refresh token
-            res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 }) // secure: true should be used in production
+            res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000, secure: true }) // secure: true should be used in production
 
 
             res.json({ accessToken })

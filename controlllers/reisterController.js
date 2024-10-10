@@ -12,7 +12,7 @@ const handleNewUser = async (req, res) => {
         User.findOne({ username: username }).exec(),
         User.findOne({ email: email }).exec()
     ]);
-    if(duplicateUsername || duplicateEmail) return res.send(409).json({ 'message' : 'Username or email is already in use'}) // conflict
+    if(duplicateUsername || duplicateEmail) return res.send(409).json({ message : 'Username or email is already in use'}) // conflict
 
     try {
         // Encrypt the password
