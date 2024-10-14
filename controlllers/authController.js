@@ -11,9 +11,6 @@ const handleLogin = async (req, res) => {
         return res.status(400).json({ message: "Username and password are required." });
     }
 
-    username = username.trim()
-    email = eamil.trim()
-
     // Find user by either username or email
     const foundUser = await User.findOne({
         $or: [{ username }, { email }]
