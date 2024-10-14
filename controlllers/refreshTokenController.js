@@ -3,7 +3,7 @@ const User = require('../models/User')
 
 const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies
-    if(!cookies?.jwt) return res.status(401).json({message: "Cookies are not found"}) // No content
+    if(!cookies?.jwt) return res.status(401).json({message: "Cookies are not found",loggedIn: false }) // No content
     const refreshToken = cookies.jwt
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
 
@@ -23,7 +23,7 @@ const handleRefreshToken = async (req, res) => {
                 console.log(result)
             }
         )
-        return res.sendStatus(403) // forbidden
+        return res.status(403).json({ loggedIn: false }) // forbidden
     }
 
     const newRefreshTokenArray = foundUser.refreshToken.filter(rt => rt.trim() !== refreshToken)
@@ -39,7 +39,7 @@ const handleRefreshToken = async (req, res) => {
                 const result = await foundUser.save()
                 console.log(result)
             }
-            if(err || foundUser.username !== decoded.username) return res.sendStatus(403)
+            if(err || foundUser.username !== decoded.username) return res.status(403).json({ loggedIn: false })
 
             // Refresh token was still valid
             const accessToken = jwt.sign(
@@ -69,7 +69,7 @@ const handleRefreshToken = async (req, res) => {
             res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000, secure: true }) // secure: true should be used in production
 
 
-            res.json({ accessToken })
+            res.json({ accessToken, loggedIn: true })
         }
     ) 
 }
