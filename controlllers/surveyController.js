@@ -64,11 +64,11 @@ const getSurveyDetails = async (req, res) => {
         if(!foundSurvey) return res.status(400).json({ 'message': 'Survey is not available for this user' })
 
         // Send the survey answers to the client
-        res.status(200).json({ foundSurvey })
+        return res.status(200).json({ foundSurvey })
 
     } catch(err) {
         console.error('Error getting survey details: ', err)
-        res.status(500).json({ 'message' : 'server error'})
+        return res.status(500).json({ 'message' : 'server error'})
     }
 }
 
