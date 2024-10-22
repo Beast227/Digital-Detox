@@ -21,7 +21,7 @@ const handleProgressTrackerDetails = async (req, res) => {
 
         if (existingTracker) {
             // If tracker exists, append new data to the existing arrays
-            existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, ...weeklyUsage];
+            existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, weeklyUsage];
         } else {
             // If no tracker exists, create a new one
             existingTracker = new Tracker({
