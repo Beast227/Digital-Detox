@@ -9,15 +9,33 @@ const appUsageObjects = new Schema({
     usage: {
         type: String,
         required: true
+    },
+    date: {
+        type: Date,
+        required: true
+    }
+})
+
+const weeklyUsageObjects = new Schema({
+    usage: {
+        type: Number,
+        required: true
+    },
+    date: {
+        type: Date,
+        required: true
     }
 })
 
 const trackerSchema = new Schema({
     weeklyUsage: {
-        type: [Number],
+        type: [weeklyUsageObjects],
         required: true
     },
-    appUsage: [appUsageObjects],
+    appUsage: {
+        type: [appUsageObjects],
+        required: true
+    },
     user: {
         type: Schema.Types.ObjectId,
         required: true
