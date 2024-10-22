@@ -22,13 +22,11 @@ const handleProgressTrackerDetails = async (req, res) => {
         if (existingTracker) {
             // If tracker exists, append new data to the existing arrays
             existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, ...trackingInfo.weeklyUsage];
-            existingTracker.appUsage = [...existingTracker.appUsage, ...trackingInfo.appUsage];
         } else {
             // If no tracker exists, create a new one
             existingTracker = new Tracker({
                 user: foundUser._id, // Link to the User ID
                 weeklyUsage: trackingInfo.weeklyUsage,
-                appUsage: trackingInfo.appUsage,
             });
         }
 
