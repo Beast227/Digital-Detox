@@ -7,7 +7,7 @@ const handleProgressTrackerDetails = async (req, res) => {
         // Check if the user is logged in
         if (!cookies) return res.status(400).json({ 'message': 'Please login first' });
 
-        const { trackingInfo } = req.body;
+        const { weeklyUsage } = req.body;
         // Validate if trackingInfo is sent in the request body
         if (!trackingInfo) return res.status(400).json({ 'message': 'No data sent' });
 
@@ -21,21 +21,23 @@ const handleProgressTrackerDetails = async (req, res) => {
 
         if (existingTracker) {
             // If tracker exists, append new data to the existing arrays
-            existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, ...trackingInfo.weeklyUsage];
+            existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, ...weeklyUsage];
         } else {
             // If no tracker exists, create a new one
             existingTracker = new Tracker({
                 user: foundUser._id, // Link to the User ID
-                weeklyUsage: trackingInfo.weeklyUsage,
+                weeklyUsage: weeklyUsage
             });
         }
+
+        console.log(weeklyUsage)
 
         // Save or update the Tracker in the database
         const result = await existingTracker.save();
         console.log(result);
 
         // Respond to the client
-        res.status(200).json({ 'Success': 'Tracker details are saved' });
+        return res.status(200).json({ 'Success': 'Tracker details are saved' });
 
     } catch (error) {
         console.error('Error saving Tracker:', error);
@@ -58,7 +60,7 @@ const getTrackerDetails = async(req, res) => {
         const existingTracker = await Tracker.findOne({ user: foundUser._id });
 
         // Respond to the client
-        res.status(200).json({ 'Success': 'Tracker details are sent', existingTracker });
+        return res.status(200).json({ 'Success': 'Tracker details are sent', existingTracker });
 
     } catch (error) {
         console.error('Error getting Tracker:', error);
