@@ -43,4 +43,27 @@ const handleProgressTrackerDetails = async (req, res) => {
     }
 };
 
-module.exports = { handleProgressTrackerDetails };
+const getTrackerDetails = async(req, res) => {
+    try {
+        const cookies = req.cookies;
+        // Check if the user is logged in
+        if (!cookies) return res.status(400).json({ 'message': 'Please login first' });
+
+        // Validate user details by checking the refresh token in cookies
+        const refreshToken = cookies.jwt;
+        const foundUser = await User.findOne({ refreshToken: refreshToken });
+        if (!foundUser) return res.status(400).json({ 'message': 'Invalid RefreshToken' });
+
+        // Check if a Tracker already exists for the user
+        const existingTracker = await Tracker.findOne({ user: foundUser._id });
+
+        // Respond to the client
+        res.status(200).json({ 'Success': 'Tracker details are sent', existingTracker });
+
+    } catch (error) {
+        console.error('Error getting Tracker:', error);
+        res.status(500).json({ 'message': 'Server error' });
+    }
+}
+
+module.exports = { handleProgressTrackerDetails, getTrackerDetails };

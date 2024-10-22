@@ -4,5 +4,6 @@ const router = express.Router()
 
 router
 .post('/', progressTrackerController.handleProgressTrackerDetails)
+.get('/', progressTrackerController.getTrackerDetails)
 
 module.exports = router
