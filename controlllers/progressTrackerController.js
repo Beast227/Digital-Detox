@@ -8,8 +8,8 @@ const handleProgressTrackerDetails = async (req, res) => {
         if (!cookies) return res.status(400).json({ 'message': 'Please login first' });
 
         const { weeklyUsage } = req.body;
-        // Validate if trackingInfo is sent in the request body
-        if (!trackingInfo) return res.status(400).json({ 'message': 'No data sent' });
+        // Validate if weeklyUsage is sent in the request body
+        if (!weeklyUsage) return res.status(400).json({ 'message': 'No data sent' });
 
         // Validate user details by checking the refresh token in cookies
         const refreshToken = cookies.jwt;
