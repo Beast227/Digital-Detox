@@ -39,7 +39,7 @@ const handleRefreshToken = async (req, res) => {
                 const result = await foundUser.save()
                 console.log(result)
             }
-            if(err || foundUser.username !== decoded.username) return res.status(403).json({ loggedIn: false })
+            if(err || foundUser.username !== decoded.username) return res.status(403)
 
             // Refresh token was still valid
             const accessToken = jwt.sign(

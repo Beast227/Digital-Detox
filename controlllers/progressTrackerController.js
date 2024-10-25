@@ -30,8 +30,6 @@ const handleProgressTrackerDetails = async (req, res) => {
             });
         }
 
-        console.log(weeklyUsage)
-
         // Save or update the Tracker in the database
         const result = await existingTracker.save();
         console.log(result);

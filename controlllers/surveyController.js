@@ -18,11 +18,11 @@ const handleSurveyDetails = async (req, res) => {
         })
         if(!foundUser) return res.status(400).json({ 'message': 'Invalid RefreshToken' })
 
-        // // Only one survey answers for one user
-        // const foundSurvey = await Survey.findOne({ user: foundUser._id })
-        // if(foundSurvey){
-        //     return res.status(401).json({ 'message': 'You have already answered this survey'})
-        // }
+        // Only one survey answers for one user
+        const foundSurvey = await Survey.findOne({ user: foundUser._id })
+        if(foundSurvey){
+            return res.status(401).json({ 'message': 'You have already answered this survey'})
+        }
     
         // Create new Survey
         const newSurvey = new Survey({
