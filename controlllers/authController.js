@@ -21,7 +21,7 @@ const handleLogin = async (req, res) => {
     // Compare provided password with stored hashed password
     const match = await bcrypt.compare(password, foundUser.password);
 
-    if (!match) return res.send(401).json({ message: "Password incorrect!! Try again "}); // Unauthorized
+    if (!match) return res.status(401).json({ message: "Password incorrect!! Try again "}); // Unauthorized
 
     // Create Access Token
     const accessToken = jwt.sign(
@@ -74,7 +74,7 @@ const handleLogin = async (req, res) => {
     });
 
     // Send the access token to the client
-    res.json({ accessToken });
+    return res.json({ accessToken });
 };
 
 module.exports = { handleLogin };
