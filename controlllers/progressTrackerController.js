@@ -7,7 +7,7 @@ const handleProgressTrackerDetails = async (req, res) => {
         // Check if the user is logged in
         if (!cookies) return res.status(400).json({ 'message': 'Please login first' });
 
-        const { weeklyUsage } = req.body;
+        const { weeklyUsage, limitedUsage } = req.body;
         // Validate if weeklyUsage is sent in the request body
         if (!weeklyUsage) return res.status(400).json({ 'message': 'No data sent' });
 
@@ -21,12 +21,13 @@ const handleProgressTrackerDetails = async (req, res) => {
 
         if (existingTracker) {
             // If tracker exists, append new data to the existing arrays
-            existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, weeklyUsage];
+            existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, weeklyUsage]
         } else {
             // If no tracker exists, create a new one
             existingTracker = new Tracker({
                 user: foundUser._id, // Link to the User ID
-                weeklyUsage: weeklyUsage
+                weeklyUsage: weeklyUsage,
+                limitedUsage: limitedUsage
             });
         }
 

@@ -20,6 +20,10 @@ const trackerSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         required: true
+    },
+    limitedUsage: {
+        type: weeklyUsageObjects,
+        required: true
     }
 })
 
