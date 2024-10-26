@@ -22,8 +22,7 @@ const trackerSchema = new Schema({
         required: true
     },
     limitedUsage: {
-        type: weeklyUsageObjects,
-        required: true
+        type: Number
     }
 })
 
