@@ -12,7 +12,8 @@ const handleNewUser = async (req, res) => {
         User.findOne({ username: username }).exec(),
         User.findOne({ email: email }).exec()
     ]);
-    if(duplicateUsername || duplicateEmail) return res.status(409).json({ message : 'Username or email is already in use'}) // conflict
+    if(duplicateUsername) return res.status(409).json({ message : 'Username is already in use'}) // conflict
+    if(duplicateEmail) return res.status(409).json({ message : 'Email is already in use'}) // conflict
 
     try {
         // Encrypt the password
