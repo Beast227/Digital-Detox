@@ -16,12 +16,12 @@ const handleLogin = async (req, res) => {
         $or: [{ username }, { email }]
     }).exec();
 
-    if (!foundUser) return res.status(401).json({ message: "User not found!!"}); // Unauthorized
+    if (!foundUser) return res.status(401).json({ message: "Username not found"}); // Unauthorized
 
     // Compare provided password with stored hashed password
     const match = await bcrypt.compare(password, foundUser.password);
 
-    if (!match) return res.status(401).json({ message: "Password incorrect!! Try again "}); // Unauthorized
+    if (!match) return res.status(401).json({ message: "Password incorrect. Try again "}); // Unauthorized
 
     // Create Access Token
     const accessToken = jwt.sign(

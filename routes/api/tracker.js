@@ -5,5 +5,6 @@ const router = express.Router()
 router
 .post('/', progressTrackerController.handleProgressTrackerDetails)
 .get('/', progressTrackerController.getTrackerDetails)
+.patch('/', progressTrackerController.updateLimitedUsage)
 
 module.exports = router
