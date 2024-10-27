@@ -10,7 +10,7 @@ const handleGetUser = async(req, res) => {
     const foundUser = await User.findOne({
         refreshToken
     })
-    .exec().select('-_id -password -refreshToken')
+    .exec()
     if(!foundUser) {
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
         return res.status(204).json({ message: 'User not found'})

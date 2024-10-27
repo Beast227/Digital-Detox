@@ -58,7 +58,7 @@ const getTrackerDetails = async(req, res) => {
         if (!foundUser) return res.status(400).json({ message : 'Invalid RefreshToken' });
 
         // Check if a Tracker already exists for the user
-        const existingTracker = await Tracker.findOne({ user: foundUser._id }).exec().select('-_id -user')
+        const existingTracker = await Tracker.findOne({ user: foundUser._id }).exec()
         if(!existingTracker) return res.status(400).json({ message :  'Tracker details not found'})
 
         // Respond to the client
