@@ -82,7 +82,7 @@ const updateLimitedUsage = async (req, res) => {
         if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' });
 
         const { limitedUsage } = req.body
-        if(!limitedUsage) return res.status(400).json({ message : 'limitedUsage object not sent' })
+        if(!limitedUsage) return res.status(400).json({ message : 'limitedUsage object not sent to update' })
 
         // Check if a Tracker already exists for the user
         const existingTracker = await Tracker.findOne({ user: foundUser._id });
