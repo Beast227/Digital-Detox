@@ -60,7 +60,7 @@ const getSurveyDetails = async (req, res) => {
         // Validate survey details
         const foundSurvey = await Survey.find({
             user: foundUser._id
-        }).exec().select('-_id -user')
+        }).exec()
         if(!foundSurvey) return res.status(400).json({ message: 'Survey is not available for this user' })
 
         // Send the survey answers to the client

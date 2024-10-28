@@ -3,18 +3,18 @@ const User = require('../models/User')
 
 const handleProgressTrackerDetails = async (req, res) => {
     try {
-        const cookies = req.cookies;
+        const cookies = req.cookies
         // Check if the user is logged in
-        if (!cookies) return res.status(400).json({ message: 'Please login first' });
+        if (!cookies) return res.status(400).json({ message: 'Please login first' })
 
-        const { weeklyUsage, limitedUsage } = req.body;
+        const { weeklyUsage, limitedUsage } = req.body
         // Validate if weeklyUsage is sent in the request body
-        if (!weeklyUsage) return res.status(400).json({ message: 'No data sent' });
+        if (!weeklyUsage) return res.status(400).json({ message: 'No data sent' })
 
         // Validate user details by checking the refresh token in cookies
-        const refreshToken = cookies.jwt;
-        const foundUser = await User.findOne({ refreshToken: refreshToken });
-        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' });
+        const refreshToken = cookies.jwt
+        const foundUser = await User.findOne({ refreshToken: refreshToken })
+        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
 
         // Check if a Tracker already exists for the user
         let existingTracker = await Tracker.findOne({ user: foundUser._id }).exec()
