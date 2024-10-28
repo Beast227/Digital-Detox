@@ -9,30 +9,30 @@ const surveySchema = new Schema ({
         challengingTask: [{
             type: String
         }],
-        primaryGoal: [{
+        primaryGoal: {
             type: String
-        }],
-        screenActivity: [{
+        },
+        screenActivity: {
             type: String
-        }],
-        screenTime: [{
+        },
+        screenTime: {
             type: String
-        }],
-        socialMediaStrategy: [{
+        },
+        socialMediaStrategy: {
             type: String
-        }],
-        socialMediaTime: [{
+        },
+        socialMediaTime: {
             type: String
-        }],
-        whatHelp: [{
+        },
+        whatHelp: {
             type: String
-        }],
-        workScreenTime: [{
+        },
+        workScreenTime: {
             type: String
-        }],
-        workTimeBreaks: [{
+        },
+        workTimeBreaks: {
             type: String
-        }],
+        },
     },
     user: {
         type: Schema.Types.ObjectId,

@@ -109,7 +109,7 @@ const updateSurvey = async (req, res) => {
         console.log(result)
     
         // Response to the client
-        res.status(200).json({ Success : 'Survey detais are saved'})
+        return res.status(200).json({ Success : 'Survey detais are saved'})
 
     } catch (err) {
         console.error('Error getting survey details: ', err)
