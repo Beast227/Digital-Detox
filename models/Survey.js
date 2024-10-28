@@ -3,12 +3,12 @@ const Schema = mongoose.Schema
 
 const surveySchema = new Schema ({
     responses: {
-        activityPriority: [{
+        activityPriority: {
             type: String
-        }],
-        challengingTask: [{
+        },
+        challengingTask: {
             type: String
-        }],
+        },
         primaryGoal: {
             type: String
         },

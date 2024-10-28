@@ -58,7 +58,7 @@ const getSurveyDetails = async (req, res) => {
         if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
 
         // Validate survey details
-        const foundSurvey = await Survey.find({
+        const foundSurvey = await Survey.findOne({
             user: foundUser._id
         }).exec()
         if(!foundSurvey) return res.status(400).json({ message: 'Survey is not available for this user' })
