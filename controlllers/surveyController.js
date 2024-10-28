@@ -100,9 +100,7 @@ const updateSurvey = async (req, res) => {
         }
     
         // Update survey
-        foundSurvey.responses = responses.map(response => ({
-                answer: response.answer.trim()
-        }))
+        foundSurvey.responses = responses
     
         // Save Survey to database
         const result = await foundSurvey.save()
