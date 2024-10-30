@@ -39,7 +39,7 @@ const handleRefreshToken = async (req, res) => {
                 const result = await foundUser.save()
                 console.log(result)
             }
-            if(err || foundUser.username !== decoded.username) return res.status(403)
+            if(err || foundUser.username !== decoded.username) return res.status(403).json({ loggedIn: false })
 
             // Refresh token was still valid
             const accessToken = jwt.sign(
@@ -56,7 +56,7 @@ const handleRefreshToken = async (req, res) => {
             const newRefreshToken = jwt.sign(
                 { "username" : foundUser.username },
                 process.env.REFRESH_TOKEN_SECRET,
-                { expiresIn : '7d' }
+                { expiresIn : '1d' }
             )
     
             // Saving rereshToken with current user
@@ -66,10 +66,10 @@ const handleRefreshToken = async (req, res) => {
 
             
             // Create secure cookie with refresh token
-            res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000, secure: true }) // secure: true should be used in production
+            res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000, secure: true }) // secure: true should be used in production
 
 
-            res.json({ accessToken, loggedIn: true })
+            return res.json({ accessToken, loggedIn: true })
         }
     ) 
 }
