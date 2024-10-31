@@ -9,7 +9,7 @@ const handleAddTask = async (req, res) => {
         // Checking weather user is logged in or not
         if(!cookies || !cookies.jwt) return res.status(400).json({ message : 'Please login first '})
     
-        const { task_name, task_limit } = req.body
+        const { task_name, task_limit, priority } = req.body
         // Checking whether the data is sent or not
         if(!task_name || !task_limit) return res.status(400).json({ message : 'Data not sent' })
         
@@ -20,12 +20,23 @@ const handleAddTask = async (req, res) => {
         })
         if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
     
-        // Creating new To_Do_list
-        const result = await To_Do_list.create({
-            task_name: task_name,
-            task_limit: task_limit,
-            user: foundUser._id
-        })
+        let result
+        if(!priority){
+            // Creating new To_Do_list
+            result = await To_Do_list.create({
+                task_name: task_name,
+                task_limit: task_limit,
+                user: foundUser._id
+            })
+        }else {
+            // Creating new To_Do_list
+            result = await To_Do_list.create({
+                task_name,
+                task_limit,
+                priority,
+                user: foundUser._id
+            })
+        }
         console.log(result)
         
         return res.status(200).json({ Success: 'To do list added' })

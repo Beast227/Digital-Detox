@@ -16,6 +16,10 @@ const toDoSchema = new Schema({
         type: Number,
         required: true
     },
+    priority: {
+        type: Boolean,
+        default: 0
+    },
     status: {
         type: String,
         default: "Pending"
