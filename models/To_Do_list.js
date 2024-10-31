@@ -12,7 +12,7 @@ const toDoSchema = new Schema({
         required: true,
         index: true
     },
-    time_limit: {
+    task_limit: {
         type: Number,
         required: true
     },
