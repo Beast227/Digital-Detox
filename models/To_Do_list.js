@@ -21,12 +21,12 @@ const toDoSchema = new Schema({
         default: 0
     },
     status: {
-        type: String,
-        default: "Pending"
+        type: Boolean,
+        default: 0
     },
     notification_sent: {
         type: Boolean,
-        default: false
+        default: 0
     }
 })
 
