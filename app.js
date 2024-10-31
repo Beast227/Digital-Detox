@@ -38,6 +38,7 @@ app.use('/survey', require('./routes/api/survery'))
 app.use('/updateSurvey', require('./routes/api/updatesurvey'))
 app.use('/forgotPassword', require('./routes/api/updatePassword'))
 app.use('/logOutAllSessions', require('./routes/api/logOutAllSession'))
+app.use('/toDoList', require('./routes/api/toDoList'))
 
 // verification with jwt
 app.use(verifyJWT)

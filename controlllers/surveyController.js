@@ -35,11 +35,11 @@ const handleSurveyDetails = async (req, res) => {
         console.log(result)
     
         // Response to the client
-        res.status(200).json({ Success : 'Survey detais are saved'})
+        return res.status(200).json({ Success : 'Survey detais are saved'})
     
     } catch (error) {
         console.error('Error saving survey:', error);
-        res.status(500).json({ message: 'Server error' });
+        return res.status(500).json({ message: 'Server error' });
     }
 }
 
