@@ -43,6 +43,9 @@ app.use('/toDoList', require('./routes/api/toDoList'))
 // verification with jwt
 app.use(verifyJWT)
 
+// Protected Routes
+
+
 // Checking the connection is connected or not with the database
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')
