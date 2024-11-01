@@ -90,9 +90,9 @@ const handlecompletedTask = async (req, res) => {
         // Checking weather user is logged in or not
         if(!cookies || !cookies.jwt) return res.status(400).json({ message : 'Please login first '})
     
-        const { task_name, status } = req.body
+        const { task_name, status, priority } = req.body
         // Checking whether the data is sent or not
-        if(!task_name || !status) return res.status(400).json({ message : 'Data not sent' })
+        if(!task_name) return res.status(400).json({ message : 'Data not sent' })
         
         // Validate user details
         const refreshToken = cookies.jwt
@@ -108,11 +108,42 @@ const handlecompletedTask = async (req, res) => {
         if(!foundTask) return res.status(400).json({ message: 'Task not found' })
         
         // update the task
-        foundTask.status = status;
+        foundTask.status = status
+        foundTask.priority = priority
         const result = await foundTask.save()
         console.log(result)
 
         return res.status(200).json({ message: 'Task completed' })
+
+    } catch (error) {
+        console.error('Error saving survey:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+}
+
+const handleDeleteTask = async (req, res) => {
+    try {
+
+        const cookies = req.cookies
+        // Checking weather user is logged in or not
+        if(!cookies || !cookies.jwt) return res.status(400).json({ message : 'Please login first '})
+    
+        const { task_name } = req.body
+        // Checking whether the data is sent or not
+        if(!task_name) return res.status(400).json({ message : 'Data not sent' })
+
+        // Validate user details
+        const refreshToken = cookies.jwt
+        const foundUser = await User.findOne({
+            refreshToken: refreshToken
+        })
+        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+
+        // Finding the task needed to be updated
+        const foundTask = await To_Do_list.deleteOne({
+            $and: [{task_name, user: foundUser._id}]
+        })
+        if(!foundTask) return res.status(400).json({ message: 'Task not found' })
 
     } catch (error) {
         console.error('Error saving survey:', error);
