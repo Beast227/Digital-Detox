@@ -68,7 +68,7 @@ const handleLogin = async (req, res) => {
     // Set the new refresh token in the client-side cookie
     res.cookie('jwt', newRefreshToken, {
         httpOnly: true,
-        sameSite: 'Lax', // Set 'Secure' and 'SameSite' options properly in production 
+        sameSite: 'None', // Set 'Secure' and 'SameSite' options properly in production 
         secure: true,// For production, ensure HTTPS
         maxAge: 24 * 60 * 60 * 1000 // Cookie expires in 1 day
     });
