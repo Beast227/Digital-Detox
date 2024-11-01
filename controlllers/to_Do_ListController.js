@@ -145,10 +145,12 @@ const handleDeleteTask = async (req, res) => {
         })
         if(!foundTask) return res.status(400).json({ message: 'Task not found' })
 
+        return res.status(200).json({ message : 'Successfully deleted the task'})
+
     } catch (error) {
         console.error('Error saving survey:', error);
         return res.status(500).json({ message: 'Server error' });
     }
 }
 
-module.exports = { handleAddTask, getTasks, handlecompletedTask }
+module.exports = { handleAddTask, getTasks, handlecompletedTask, handleDeleteTask }
