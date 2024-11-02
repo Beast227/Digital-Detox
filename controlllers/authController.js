@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const Survey = require("../models/Survey")
+const To_Do_list = require("../models/To_Do_list")
+const User = require("../models/User")
+const Tracker = require("../models/Tracker")
 const bcrypt = require('bcrypt');
 
 const handleLogin = async (req, res) => {
@@ -77,4 +80,68 @@ const handleLogin = async (req, res) => {
     return res.json({ accessToken });
 };
 
-module.exports = { handleLogin };
+
+const handleDeleteAccount = async (req, res) => {
+    try {
+        const cookies = req.cookies
+        if (!cookies || !cookies.jwt) return res.status(204).json({ message: 'Cookies not found' })
+        const refreshToken = cookies.jwt
+
+        // Is refreshToken in db?
+        const foundUser = await User.findOne({
+            refreshToken
+        })
+            .exec()
+        if (!foundUser) {
+            res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
+            return res.status(204).json({ message: 'User not found' })
+        }
+
+        // Deleting to do list
+        await To_Do_list.deleteMany({
+            user: foundUser._id
+        }).exec()
+
+        // Deleting survey details
+        await Survey.deleteOne({
+            user: foundUser._id
+        }).exec()
+
+        // Deleting tracker details
+        await Tracker.deleteOne({
+            user: foundUser._id
+        }).exec()
+
+        // Deleting the user
+        await User.deleteOne({
+            _id: foundUser._id
+        }).exec()
+
+        return res.status(200).json({ message: 'Account has been successfully deleted' })
+
+    } catch (error) {
+        console.error('Error getting survey details: ', err)
+        return res.status(500).json({ message : 'server error'})
+    }
+}
+
+
+const handleGetUser = async(req, res) => {
+    const cookies = req.cookies
+    if (!cookies || !cookies.jwt) return res.status(204).json({ message: 'Cookies not found'})
+    const refreshToken = cookies.jwt
+
+    // Is refreshToken in db?
+    const foundUser = await User.findOne({
+        refreshToken
+    })
+    .exec()
+    if(!foundUser) {
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
+        return res.status(204).json({ message: 'User not found'})
+    }
+
+    return res.status(200).json({ foundUser })
+}
+
+module.exports = { handleLogin, handleDeleteAccount, handleGetUser };
