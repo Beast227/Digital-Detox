@@ -36,7 +36,11 @@ const surveySchema = new Schema ({
     },
     user: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        index: true
+    },
+    cluster: {
+        type: Number
     }
 })
 

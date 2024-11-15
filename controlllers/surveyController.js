@@ -5,38 +5,38 @@ const handleSurveyDetails = async (req, res) => {
     try {
         const cookies = req.cookies
         // Checking weather user is logged in or not
-        if(!cookies) return res.status(400).json({ message : 'Please login first '})
-    
+        if (!cookies) return res.status(400).json({ message: 'Please login first ' })
+
         const { responses } = req.body
         // Checking weather qna is present or not
-        if(!responses) return res.status(400).json({ message : 'Question and answers are required'})
-    
+        if (!responses) return res.status(400).json({ message: 'Question and answers are required' })
+
         // Validate user details
         const refreshToken = cookies.jwt
         const foundUser = await User.findOne({
             refreshToken: refreshToken
         })
-        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
 
         // Only one survey answers for one user
         const foundSurvey = await Survey.findOne({ user: foundUser._id })
-        if(foundSurvey){
-            return res.status(401).json({ message: 'You have already answered this survey'})
+        if (foundSurvey) {
+            return res.status(401).json({ message: 'You have already answered this survey' })
         }
-    
+
         // Create new Survey
         const newSurvey = new Survey({
             user: foundUser._id, // Link to the User ID
             responses: responses
         })
-    
+
         // Save Survey to database
         const result = await newSurvey.save()
         console.log(result)
-    
+
         // Response to the client
-        return res.status(200).json({ Success : 'Survey detais are saved'})
-    
+        return res.status(200).json({ Success: 'Survey detais are saved' })
+
     } catch (error) {
         console.error('Error saving survey:', error);
         return res.status(500).json({ message: 'Server error' });
@@ -48,27 +48,60 @@ const getSurveyDetails = async (req, res) => {
 
         const cookies = req.cookies
         // Checking weather user is logged in or not
-        if(!cookies?.jwt) return res.status(401).json({message: 'Cookies are not found'})
+        if (!cookies?.jwt) return res.status(401).json({ message: 'Cookies are not found' })
 
         // Validate user details
         const refreshToken = cookies.jwt
         const foundUser = await User.findOne({
             refreshToken: refreshToken
         }).exec()
-        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
 
         // Validate survey details
         const foundSurvey = await Survey.findOne({
             user: foundUser._id
         }).exec()
-        if(!foundSurvey) return res.status(400).json({ message: 'Survey is not available for this user' })
+        if (!foundSurvey) return res.status(400).json({ message: 'Survey is not available for this user' })
+
+        if (!foundSurvey.cluster) {
+            const payload = {
+                input: {
+                    screen_time: foundSurvey.screenTime,
+                    main_activity: foundSurvey.screenActivity,
+                    social_media_time: foundSurvey.socialMediaTime,
+                    reduce_social_media: foundSurvey.socialMediaStrategy,
+                    work_screen_time: foundSurvey.workScreenTime,
+                    tech_free_breaks: foundSurvey.workTimeBreaks,
+                    detox_goal: foundSurvey.primaryGoal,
+                    screen_time_challenges: foundSurvey.challengingTask,
+                    detox_support: foundSurvey.whatHelp,
+                    detox_priorities: foundSurvey.activityPriority
+                }
+            };
+
+            const response = await fetch('https://digital-detox-ml.onrender.com/cluster', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            foundSurvey.cluster = data.cluster
+            await foundSurvey.save()
+        }
 
         // Send the survey answers to the client
         return res.status(200).json({ foundSurvey })
 
-    } catch(err) {
+    } catch (err) {
         console.error('Error getting survey details: ', err)
-        return res.status(500).json({ message : 'server error'})
+        return res.status(500).json({ message: 'server error' })
     }
 }
 
@@ -77,41 +110,41 @@ const getSurveyDetails = async (req, res) => {
 // Function to update survey details of the user
 const updateSurvey = async (req, res) => {
     try {
-        
+
         const cookies = req.cookies
         // Checking weather user is logged in or not
-        if(!cookies) return res.status(400).json({ message : 'Please login first '})
-    
+        if (!cookies) return res.status(400).json({ message: 'Please login first ' })
+
         const { responses } = req.body
         // Checking weather qna is present or not
-        if(!responses) return res.status(400).json({ message : 'Question and answers are required'})
-    
+        if (!responses) return res.status(400).json({ message: 'Question and answers are required' })
+
         // Validate user details
         const refreshToken = cookies.jwt
         const foundUser = await User.findOne({
             refreshToken: refreshToken
         })
-        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
 
         // Only one survey answers for one user
         const foundSurvey = await Survey.findOne({ user: foundUser._id })
-        if(!foundSurvey){
-            return res.status(401).json({ message: 'Your survey answer is not saved'})
+        if (!foundSurvey) {
+            return res.status(401).json({ message: 'Your survey answer is not saved' })
         }
-    
+
         // Update survey
         foundSurvey.responses = responses
-    
+
         // Save Survey to database
         const result = await foundSurvey.save()
         console.log(result)
-    
+
         // Response to the client
-        return res.status(200).json({ Success : 'Survey detais are saved'})
+        return res.status(200).json({ Success: 'Survey detais are saved' })
 
     } catch (err) {
         console.error('Error getting survey details: ', err)
-        res.status(500).json({ message : 'server error'})
+        res.status(500).json({ message: 'server error' })
     }
 }
 
