@@ -81,19 +81,19 @@ const getSurveyDetails = async (req, res) => {
 
             const response = await fetch('https://digital-detox-ml.onrender.com/cluster', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
 
             if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`Failed to fetch /cluster: ${errorText}`);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            foundSurvey.cluster = data.cluster
-            await foundSurvey.save()
+            foundSurvey.cluster = data.cluster;
+            await foundSurvey.save();
         }
 
         // Send the survey answers to the client
