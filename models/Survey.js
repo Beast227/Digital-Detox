@@ -40,7 +40,8 @@ const surveySchema = new Schema ({
         index: true
     },
     cluster: {
-        type: Number
+        type: Number,
+        default: 0,
     }
 })
 

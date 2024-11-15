@@ -78,6 +78,8 @@ const getSurveyDetails = async (req, res) => {
                     detox_priorities: foundSurvey.activityPriority
                 }
             };
+            console.log(payload)
+            console.log(foundSurvey)
 
             const response = await fetch('https://digital-detox-ml.onrender.com/cluster', {
                 method: 'POST',
