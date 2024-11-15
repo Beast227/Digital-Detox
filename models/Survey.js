@@ -41,7 +41,7 @@ const surveySchema = new Schema ({
     },
     cluster: {
         type: Number,
-        default: 0,
+        default: -1
     }
 })
 

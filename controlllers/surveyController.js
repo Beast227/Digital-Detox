@@ -63,7 +63,7 @@ const getSurveyDetails = async (req, res) => {
         }).exec()
         if (!foundSurvey) return res.status(400).json({ message: 'Survey is not available for this user' })
 
-        if (!foundSurvey.cluster) {
+        if (foundSurvey.cluster === -1) {
             const payload = {
                 "input": {
                     "screen_time": foundSurvey.responses.screenTime,
