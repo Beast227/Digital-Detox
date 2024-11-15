@@ -66,18 +66,19 @@ const getSurveyDetails = async (req, res) => {
         if (!foundSurvey.cluster) {
             const payload = {
                 "input": {
-                    "screen_time": foundSurvey.screenTime,
-                    "main_activity": foundSurvey.screenActivity,
-                    "social_media_time": foundSurvey.socialMediaTime,
-                    "reduce_social_media": foundSurvey.socialMediaStrategy,
-                    "work_screen_time": foundSurvey.workScreenTime,
-                    "tech_free_breaks": foundSurvey.workTimeBreaks,
-                    "detox_goal": foundSurvey.primaryGoal,
-                    "screen_time_challenges": foundSurvey.challengingTask,
-                    "detox_support": foundSurvey.whatHelp,
-                    "detox_priorities": foundSurvey.activityPriority
+                    "screen_time": foundSurvey.responses.screenTime,
+                    "main_activity": foundSurvey.responses.screenActivity,
+                    "social_media_time": foundSurvey.responses.socialMediaTime,
+                    "reduce_social_media": foundSurvey.responses.socialMediaStrategy,
+                    "work_screen_time": foundSurvey.responses.workScreenTime,
+                    "tech_free_breaks": foundSurvey.responses.workTimeBreaks,
+                    "detox_goal": foundSurvey.responses.primaryGoal,
+                    "screen_time_challenges": foundSurvey.responses.challengingTask,
+                    "detox_support": foundSurvey.responses.whatHelp,
+                    "detox_priorities": foundSurvey.responses.activityPriority
                 }
             };
+            console.log(payload)
 
             const response = await fetch('https://digital-detox-ml.onrender.com/cluster', {
                 method: 'POST',
