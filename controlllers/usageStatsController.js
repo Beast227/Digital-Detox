@@ -44,7 +44,7 @@ const handleAppUsageData = async (req, res) => {
         })
 
     } catch (error) {
-        console.error('Error getting survey details: ', err)
+        console.error('Error getting survey details: ', error)
         return res.status(500).json({ message : 'server error'})
     }
 
