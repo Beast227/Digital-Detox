@@ -30,7 +30,8 @@ const handleLogin = async (req, res) => {
     const accessToken = jwt.sign(
         {
             "UserInfo": {
-                "username": foundUser.username
+                "username": foundUser.username,
+                "id": foundUser._id
             }
         },
         process.env.ACCESS_TOKEN_SECRET,
@@ -39,9 +40,12 @@ const handleLogin = async (req, res) => {
 
     // Create a new Refresh Token
     const newRefreshToken = jwt.sign(
-        { "username": foundUser.username },
+        { 
+            "username": foundUser.username,
+            "id": foundUser._id
+        },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '7d' } // Refresh token expiry
+        { expiresIn: '1d' } // Refresh token expiry
     );
 
     // Initialize or filter the refresh tokens to exclude the current one (if exists in cookies)
