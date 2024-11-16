@@ -131,21 +131,60 @@ const handleDeleteAccount = async (req, res) => {
 
 
 const handleGetUser = async(req, res) => {
-    const cookies = req.cookies
-    if (!cookies || !cookies.jwt) return res.status(204).json({ message: 'Cookies not found'})
-    const refreshToken = cookies.jwt
-
-    // Is refreshToken in db?
-    const foundUser = await User.findOne({
-        refreshToken
-    })
-    .exec()
-    if(!foundUser) {
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
-        return res.status(204).json({ message: 'User not found'})
+    try {
+        const cookies = req.cookies
+        if (!cookies || !cookies.jwt) return res.status(204).json({ message: 'Cookies not found'})
+        const refreshToken = cookies.jwt
+    
+        // Is refreshToken in db?
+        const foundUser = await User.findOne({
+            refreshToken
+        })
+        .exec()
+        if(!foundUser) {
+            res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
+            return res.status(204).json({ message: 'User not found'})
+        }
+    
+        return res.status(200).json({ foundUser })
+    } catch (error) {
+        console.error('Error getting survey details: ', err)
+        return res.status(500).json({ message : 'server error'})
     }
-
-    return res.status(200).json({ foundUser })
 }
 
-module.exports = { handleLogin, handleDeleteAccount, handleGetUser };
+const updateUser = async (req, res) => {
+    try {
+        const { username, email } = req.body
+        if(!username || !email) return res.status(402).json({ message: "Data not sent to update" })
+        
+        const cookies = req.cookies
+        if (!cookies || !cookies.jwt) return res.status(401).json({ message: 'Cookies not found' })
+        const refreshToken = cookies.jwt
+
+        let _id
+        jwt.verify(
+            refreshToken, 
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token'})
+                _id = decoded.id
+            }
+        )
+    
+        // Is User in db?
+        const foundUser = await User.findByIdAndUpdate({
+            _id,
+            $set: { username, email }
+        }).exec()
+        if(!foundUser) return res.status(401).json({ message: 'User not found' })
+
+        return res.status(200).json({ message: "User updated successfully" })
+        
+    } catch (error) {
+        console.error('Error getting survey details: ', err)
+        return res.status(500).json({ message : 'server error'})
+    }
+}
+
+module.exports = { handleLogin, handleDeleteAccount, handleGetUser, updateUser }
