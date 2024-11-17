@@ -40,6 +40,7 @@ app.use('/forgotPassword', require('./routes/api/updatePassword'))
 app.use('/logOutAllSessions', require('./routes/api/logOutAllSession'))
 app.use('/toDoList', require('./routes/api/toDoList'))
 app.use('/usageStats', require('./routes/api/usageDataRouter'))
+app.use('/appLogin', require('./routes/api/appAuthRouter'))
 
 // verification with jwt
 app.use(verifyJWT)
