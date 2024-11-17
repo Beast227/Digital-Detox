@@ -50,16 +50,18 @@ const getSurveyDetails = async (req, res) => {
         // Checking weather user is logged in or not
         if (!cookies?.jwt) return res.status(401).json({ message: 'Cookies are not found' })
 
-        // Validate user details
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({
-            refreshToken: refreshToken
-        }).exec()
-        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
-
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
         // Validate survey details
         const foundSurvey = await Survey.findOne({
-            user: foundUser._id
+            user: _id
         }).exec()
         if (!foundSurvey) return res.status(400).json({ message: 'Survey is not available for this user' })
 
@@ -119,15 +121,18 @@ const updateSurvey = async (req, res) => {
         // Checking weather qna is present or not
         if (!responses) return res.status(400).json({ message: 'Question and answers are required' })
 
-        // Validate user details
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({
-            refreshToken: refreshToken
-        })
-        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
 
         // Only one survey answers for one user
-        const foundSurvey = await Survey.findOne({ user: foundUser._id })
+        const foundSurvey = await Survey.findOne({ user: _id })
         if (!foundSurvey) {
             return res.status(401).json({ message: 'Your survey answer is not saved' })
         }

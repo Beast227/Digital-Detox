@@ -4,23 +4,24 @@ const handleLogout = async (req, res) => {
     // On client, also delete the accessToken
 
     const cookies = req.cookies
-    if (!cookies || !cookies.jwt) return res.status(204).json({ 'message': 'Cookies not found'})
+    if (!cookies || !cookies.jwt) return res.status(204).json({ 'message': 'Cookies not found' })
     const refreshToken = cookies.jwt
 
-    // Is refreshToken in db?
-    const foundUser = await User.findOne({
-        refreshToken
-    })
-    .exec()
-    if(!foundUser) {
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
-        return res.sendStatus(204)
-    }
+    let _id
+    jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (err, decoded) => {
+            if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+            _id = decoded.id
+        }
+    )
 
-    // Delete refreshToken in db
-    foundUser.refreshToken = foundUser.refreshToken.filter(rt => rt !== refreshToken);
-    const result = await foundUser.save()
-    console.log(result)
+    // Is User in db?
+    const foundUser = await User.findOne(
+        _id
+    ).exec();
+    if (!foundUser) return res.status(401).json({ message: 'User not found' });
 
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
     res.sendStatus(204)

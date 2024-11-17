@@ -11,10 +11,21 @@ const handleProgressTrackerDetails = async (req, res) => {
         // Validate if weeklyUsage is sent in the request body
         if (!weeklyUsage) return res.status(400).json({ message: 'No data sent' })
 
-        // Validate user details by checking the refresh token in cookies
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({ refreshToken: refreshToken })
-        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
+
+        // Is User in db?
+        const foundUser = await User.findOne(
+            _id
+        ).exec();
+        if (!foundUser) return res.status(401).json({ message: 'User not found' });
 
         // Check if a Tracker already exists for the user
         let existingTracker = await Tracker.findOne({ user: foundUser._id }).exec()
@@ -24,7 +35,7 @@ const handleProgressTrackerDetails = async (req, res) => {
             existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, weeklyUsage]
         } else {
             //Check weather the limitedUsage is sent or not
-            if(!limitedUsage) return res.status(400).json({ message: 'limitedUsage object not sent' })
+            if (!limitedUsage) return res.status(400).json({ message: 'limitedUsage object not sent' })
             // If no tracker exists, create a new one
             existingTracker = new Tracker({
                 user: foundUser._id, // Link to the User ID
@@ -46,7 +57,7 @@ const handleProgressTrackerDetails = async (req, res) => {
     }
 };
 
-const getTrackerDetails = async(req, res) => {
+const getTrackerDetails = async (req, res) => {
     try {
         const cookies = req.cookies;
         // Check if the user is logged in
@@ -55,11 +66,11 @@ const getTrackerDetails = async(req, res) => {
         // Validate user details by checking the refresh token in cookies
         const refreshToken = cookies.jwt;
         const foundUser = await User.findOne({ refreshToken: refreshToken });
-        if (!foundUser) return res.status(400).json({ message : 'Invalid RefreshToken' });
+        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' });
 
         // Check if a Tracker already exists for the user
         const existingTracker = await Tracker.findOne({ user: foundUser._id }).exec()
-        if(!existingTracker) return res.status(400).json({ message :  'Tracker details not found'})
+        if (!existingTracker) return res.status(400).json({ message: 'Tracker details not found' })
 
         // Respond to the client
         return res.status(200).json({ Success: 'Tracker details are sent', existingTracker });
@@ -82,11 +93,11 @@ const updateLimitedUsage = async (req, res) => {
         if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' });
 
         const { limitedUsage } = req.body
-        if(!limitedUsage) return res.status(400).json({ message : 'limitedUsage object not sent to update' })
+        if (!limitedUsage) return res.status(400).json({ message: 'limitedUsage object not sent to update' })
 
         // Check if a Tracker already exists for the user
         const existingTracker = await Tracker.findOne({ user: foundUser._id });
-        if(!existingTracker) return res.status(400).json({ message :  'Tracker details not found'})
+        if (!existingTracker) return res.status(400).json({ message: 'Tracker details not found' })
 
         existingTracker.limitedUsage = limitedUsage
         const result = await existingTracker.save()

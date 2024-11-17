@@ -31,7 +31,6 @@ app.use(cookieParser())
 // routes
 app.use('/register', require('./routes/register'))
 app.use('/auth', require('./routes/auth'))
-app.use('/refresh', require('./routes/refresh'))
 app.use('/logout', require('./routes/logout'))
 app.use('/tracker', require('./routes/api/tracker'))
 app.use('/survey', require('./routes/api/survery'))

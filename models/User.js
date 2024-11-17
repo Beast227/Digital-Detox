@@ -10,9 +10,6 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    refreshToken: {
-        type: [String]
-    },
     email: {
         type: String,
         required: true

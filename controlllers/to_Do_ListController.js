@@ -7,35 +7,38 @@ const handleAddTask = async (req, res) => {
     try {
         const cookies = req.cookies
         // Checking weather user is logged in or not
-        if(!cookies || !cookies.jwt) return res.status(400).json({ message : 'Please login first '})
-    
+        if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+
         const { task_name, task_limit, priority } = req.body
         // Checking whether the data is sent or not
-        if(!task_name || !task_limit) return res.status(400).json({ message : 'Data not sent' })
-        
-        // Validate user details
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({
-            refreshToken: refreshToken
-        })
-        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        if (!task_name || !task_limit) return res.status(400).json({ message: 'Data not sent' })
+
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
 
         // If task name is repeated
         const foundTask = await To_Do_list.findOne({
             task_name,
-            user: foundUser._id
+            user: _id
         })
-        if(foundTask) return res.status(400).json({ message: 'Repeated tasks' })
-    
+        if (foundTask) return res.status(400).json({ message: 'Repeated tasks' })
+
         let result
-        if(!priority){
+        if (!priority) {
             // Creating new To_Do_list
             result = await To_Do_list.create({
                 task_name: task_name,
                 task_limit: task_limit,
                 user: foundUser._id
             })
-        }else {
+        } else {
             // Creating new To_Do_list
             result = await To_Do_list.create({
                 task_name,
@@ -45,7 +48,7 @@ const handleAddTask = async (req, res) => {
             })
         }
         console.log(result)
-        
+
         return res.status(200).json({ Success: 'To do list added' })
     } catch (error) {
         console.error('Error saving survey:', error);
@@ -61,19 +64,22 @@ const getTasks = async (req, res) => {
     try {
         const cookies = req.cookies
         // Checking weather user is logged in or not
-        if(!cookies || !cookies.jwt) return res.status(400).json({ message : 'Please login first '})
-    
-        // Validate user details
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({
-            refreshToken: refreshToken
-        }).exec()
-        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
-        
+        if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
+
         const tasks = await To_Do_list.find({
-            user: foundUser._id
+            user: _id
         }).exec()
-        if(!tasks) return res.status(400).json({ message: 'Tasks not found' })
+        if (!tasks) return res.status(400).json({ message: 'Tasks not found' })
 
         return res.status(200).json({ Success: 'Found tasks', tasks })
 
@@ -88,25 +94,28 @@ const handlecompletedTask = async (req, res) => {
     try {
         const cookies = req.cookies
         // Checking weather user is logged in or not
-        if(!cookies || !cookies.jwt) return res.status(400).json({ message : 'Please login first '})
-    
+        if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+
         const { task_name, status, priority } = req.body
         // Checking whether the data is sent or not
-        if(!task_name) return res.status(400).json({ message : 'Data not sent' })
-        
-        // Validate user details
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({
-            refreshToken: refreshToken
-        })
-        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        if (!task_name) return res.status(400).json({ message: 'Data not sent' })
+
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
 
         // Finding the task needed to be updated
         const foundTask = await To_Do_list.findOne({
-            $and: [{task_name, user: foundUser._id}]
+            $and: [{ task_name, user: _id }]
         })
-        if(!foundTask) return res.status(400).json({ message: 'Task not found' })
-        
+        if (!foundTask) return res.status(400).json({ message: 'Task not found' })
+
         // update the task
         foundTask.status = status
         foundTask.priority = priority
@@ -126,26 +135,29 @@ const handleDeleteTask = async (req, res) => {
 
         const cookies = req.cookies
         // Checking weather user is logged in or not
-        if(!cookies || !cookies.jwt) return res.status(400).json({ message : 'Please login first '})
-    
+        if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+
         const { task_name } = req.body
         // Checking whether the data is sent or not
-        if(!task_name) return res.status(400).json({ message : 'Data not sent' })
+        if (!task_name) return res.status(400).json({ message: 'Data not sent' })
 
-        // Validate user details
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({
-            refreshToken: refreshToken
-        })
-        if(!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
 
         // Finding the task needed to be updated
         const foundTask = await To_Do_list.deleteOne({
-            $and: [{task_name, user: foundUser._id}]
+            $and: [{ task_name, user: _id }]
         })
-        if(!foundTask) return res.status(400).json({ message: 'Task not found' })
+        if (!foundTask) return res.status(400).json({ message: 'Task not found' })
 
-        return res.status(200).json({ message : 'Successfully deleted the task'})
+        return res.status(200).json({ message: 'Successfully deleted the task' })
 
     } catch (error) {
         console.error('Error saving survey:', error);
