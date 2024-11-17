@@ -36,7 +36,7 @@ const handleAddTask = async (req, res) => {
             result = await To_Do_list.create({
                 task_name: task_name,
                 task_limit: task_limit,
-                user: foundUser._id
+                user: _id
             })
         } else {
             // Creating new To_Do_list
@@ -44,7 +44,7 @@ const handleAddTask = async (req, res) => {
                 task_name,
                 task_limit,
                 priority,
-                user: foundUser._id
+                user: _id
             })
         }
         console.log(result)
