@@ -1,5 +1,6 @@
 const Tracker = require('../models/Tracker')
 const User = require('../models/User')
+const jwt = require('jsonwebtoken')
 
 const handleProgressTrackerDetails = async (req, res) => {
     try {

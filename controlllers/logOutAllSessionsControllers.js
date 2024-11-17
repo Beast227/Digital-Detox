@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const jwt = require('jsonwebtoken')
 
 const handleLogoutForAllSessions = async (req, res) => {
     // On client, also delete the accessToken
