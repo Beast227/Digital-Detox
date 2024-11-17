@@ -7,6 +7,7 @@ const handleAddTask = async (req, res) => {
         const cookies = req.cookies
         // Checking weather user is logged in or not
         if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
 
         const { task_name, task_limit, priority } = req.body
         // Checking whether the data is sent or not
@@ -64,6 +65,7 @@ const getTasks = async (req, res) => {
         const cookies = req.cookies
         // Checking weather user is logged in or not
         if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
 
         let _id
         jwt.verify(
@@ -94,6 +96,7 @@ const handlecompletedTask = async (req, res) => {
         const cookies = req.cookies
         // Checking weather user is logged in or not
         if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
 
         const { task_name, status, priority } = req.body
         // Checking whether the data is sent or not
@@ -135,7 +138,7 @@ const handleDeleteTask = async (req, res) => {
         const cookies = req.cookies
         // Checking weather user is logged in or not
         if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
-
+        const refreshToken = cookies.jwt
         const { task_name } = req.body
         // Checking whether the data is sent or not
         if (!task_name) return res.status(400).json({ message: 'Data not sent' })

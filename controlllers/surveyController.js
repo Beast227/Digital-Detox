@@ -7,20 +7,24 @@ const handleSurveyDetails = async (req, res) => {
         const cookies = req.cookies
         // Checking weather user is logged in or not
         if (!cookies) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
 
         const { responses } = req.body
         // Checking weather qna is present or not
         if (!responses) return res.status(400).json({ message: 'Question and answers are required' })
 
-        // Validate user details
-        const refreshToken = cookies.jwt
-        const foundUser = await User.findOne({
-            refreshToken: refreshToken
-        })
-        if (!foundUser) return res.status(400).json({ message: 'Invalid RefreshToken' })
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
 
         // Only one survey answers for one user
-        const foundSurvey = await Survey.findOne({ user: foundUser._id })
+        const foundSurvey = await Survey.findOne({ user: _id })
         if (foundSurvey) {
             return res.status(401).json({ message: 'You have already answered this survey' })
         }
@@ -50,6 +54,7 @@ const getSurveyDetails = async (req, res) => {
         const cookies = req.cookies
         // Checking weather user is logged in or not
         if (!cookies?.jwt) return res.status(401).json({ message: 'Cookies are not found' })
+        const refreshToken = cookies.jwt
 
         let _id
         jwt.verify(
@@ -117,6 +122,7 @@ const updateSurvey = async (req, res) => {
         const cookies = req.cookies
         // Checking weather user is logged in or not
         if (!cookies) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
 
         const { responses } = req.body
         // Checking weather qna is present or not

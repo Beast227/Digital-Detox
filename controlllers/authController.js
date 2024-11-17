@@ -59,15 +59,21 @@ const handleDeleteAccount = async (req, res) => {
         if (!cookies || !cookies.jwt) return res.status(204).json({ message: 'Cookies not found' })
         const refreshToken = cookies.jwt
 
-        // Is refreshToken in db?
-        const foundUser = await User.findOne({
-            refreshToken
-        })
-            .exec()
-        if (!foundUser) {
-            res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
-            return res.status(204).json({ message: 'User not found' })
-        }
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
+
+        // Is User in db?
+        const foundUser = await User.findOne(
+            _id
+        ).exec();
+        if (!foundUser) return res.status(401).json({ message: 'User not found' });
 
         // Deleting to do list
         await To_Do_list.deleteMany({
