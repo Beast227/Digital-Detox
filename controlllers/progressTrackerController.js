@@ -23,12 +23,6 @@ const handleProgressTrackerDetails = async (req, res) => {
             }
         )
 
-        // Is User in db?
-        const foundUser = await User.findOne(
-            _id
-        ).exec();
-        if (!foundUser) return res.status(401).json({ message: 'User not found' });
-
         // Check if a Tracker already exists for the user
         let existingTracker = await Tracker.findOne({ user: _id }).exec()
 
