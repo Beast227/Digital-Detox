@@ -30,7 +30,7 @@ const handleProgressTrackerDetails = async (req, res) => {
         if (!foundUser) return res.status(401).json({ message: 'User not found' });
 
         // Check if a Tracker already exists for the user
-        let existingTracker = await Tracker.findOne({ user: foundUser._id }).exec()
+        let existingTracker = await Tracker.findOne({ user: _id }).exec()
 
         if (existingTracker) {
             // If tracker exists, append new data to the existing arrays
@@ -40,7 +40,7 @@ const handleProgressTrackerDetails = async (req, res) => {
             if (!limitedUsage) return res.status(400).json({ message: 'limitedUsage object not sent' })
             // If no tracker exists, create a new one
             existingTracker = new Tracker({
-                user: foundUser._id, // Link to the User ID
+                user: _id, // Link to the User ID
                 weeklyUsage: weeklyUsage,
                 limitedUsage: limitedUsage
             });
