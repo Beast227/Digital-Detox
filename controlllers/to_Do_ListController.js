@@ -9,9 +9,9 @@ const handleAddTask = async (req, res) => {
         if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
         const refreshToken = cookies.jwt
 
-        const { task_name, task_limit, priority } = req.body
+        const { task_name, due_date, priority } = req.body
         // Checking whether the data is sent or not
-        if (!task_name || !task_limit) return res.status(400).json({ message: 'Data not sent' })
+        if (!task_name || !due_date) return res.status(400).json({ message: 'Data not sent' })
 
         let _id
         jwt.verify(
@@ -35,14 +35,14 @@ const handleAddTask = async (req, res) => {
             // Creating new To_Do_list
             result = await To_Do_list.create({
                 task_name: task_name,
-                task_limit: task_limit,
+                due_date: due_date,
                 user: _id
             })
         } else {
             // Creating new To_Do_list
             result = await To_Do_list.create({
                 task_name,
-                task_limit,
+                due_date,
                 priority,
                 user: _id
             })

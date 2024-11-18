@@ -12,8 +12,8 @@ const toDoSchema = new Schema({
         required: true,
         index: true
     },
-    task_limit: {
-        type: Number,
+    due_date: {
+        type: Date,
         required: true
     },
     priority: {
