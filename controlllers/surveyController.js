@@ -1,5 +1,4 @@
 const Survey = require('../models/Survey')
-const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 
 const handleSurveyDetails = async (req, res) => {
