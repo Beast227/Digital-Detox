@@ -19,9 +19,9 @@ const handleLogout = async (req, res) => {
     )
 
     // Is User in db?
-    const foundUser = await User.findOne(
+    const foundUser = await User.findOne({
         _id
-    ).exec();
+    }).exec();
     if (!foundUser) return res.status(401).json({ message: 'User not found' });
 
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
