@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const Survey = require("../models/Survey")
 const To_Do_list = require("../models/To_Do_list")
 const User = require("../models/User")
-const Tracker = require("../models/Tracker")
+const UserActivity = require("../models/UserActivity")
 const bcrypt = require('bcrypt');
 
 const handleLogin = async (req, res) => {
@@ -69,30 +69,24 @@ const handleDeleteAccount = async (req, res) => {
             }
         )
 
-        // Is User in db?
-        const foundUser = await User.findOne(
-            _id
-        ).exec();
-        if (!foundUser) return res.status(401).json({ message: 'User not found' });
-
         // Deleting to do list
         await To_Do_list.deleteMany({
-            user: foundUser._id
+            user: _id
         }).exec()
 
         // Deleting survey details
         await Survey.deleteOne({
-            user: foundUser._id
+            user: _id
         }).exec()
 
-        // Deleting tracker details
-        await Tracker.deleteOne({
-            user: foundUser._id
+        // Deleting UserActivity details
+        await UserActivity.deleteOne({
+            user: _id
         }).exec()
 
         // Deleting the user
         await User.deleteOne({
-            _id: foundUser._id
+            _id
         }).exec()
 
         return res.status(200).json({ message: 'Account has been successfully deleted' })
