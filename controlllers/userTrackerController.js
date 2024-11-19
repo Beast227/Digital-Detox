@@ -37,7 +37,7 @@ const handleUserStatsDetails = async (req, res) => {
             user: _id,
             entries,
             date
-        }).exec()
+        })
 
         // Respond to the client
         return res.status(200).json({ Success: 'Usage activity details are saved' });
