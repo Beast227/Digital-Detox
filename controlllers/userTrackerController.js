@@ -23,8 +23,9 @@ const handleUserStatsDetails = async (req, res) => {
         )
 
         // Check if a Tracker already exists for the user
-        let exsistingDate = await UserActivity.findOne({ 
-            $and: { user: _id, date}
+        const exsistingDate = await UserActivity.findOne({ 
+            user: _id,
+            date
         }).exec()
 
         if (exsistingDate) {
