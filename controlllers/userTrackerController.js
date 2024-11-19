@@ -67,16 +67,11 @@ const getUserStatsDetails = async (req, res) => {
         )
 
         // Check if a Tracker already exists for the user
-        const foundStats = await UserActivity.findOne({ user: _id }).exec()
+        const foundStats = await UserActivity.find({ user: _id }).exec()
         if (!foundStats) return res.status(400).json({ message: 'Tracker details not found' })
 
-        const data = {
-            entries : foundStats.entries, 
-            date : foundStats.date
-        }
-
         // Respond to the client
-        return res.status(200).json({ Success: 'Tracker details are sent', data });
+        return res.status(200).json({ Success: 'Tracker details are sent', data: foundStats });
 
     } catch (error) {
         console.error('Error getting Tracker:', error);
