@@ -70,7 +70,7 @@ const getUserStatsDetails = async (req, res) => {
         if (!foundStats) return res.status(400).json({ message: 'Tracker details not found' })
 
         // Respond to the client
-        return res.status(200).json({ Success: 'Tracker details are sent', foundStats });
+        return res.status(200).json({ Success: 'Tracker details are sent', entries : foundStats.entries, date : foundStats.date });
 
     } catch (error) {
         console.error('Error getting Tracker:', error);
