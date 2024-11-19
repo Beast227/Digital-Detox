@@ -70,8 +70,13 @@ const getUserStatsDetails = async (req, res) => {
         const foundStats = await UserActivity.findOne({ user: _id }).exec()
         if (!foundStats) return res.status(400).json({ message: 'Tracker details not found' })
 
+        const data = {
+            entries : foundStats.entries, 
+            date : foundStats.date
+        }
+
         // Respond to the client
-        return res.status(200).json({ Success: 'Tracker details are sent', entries : foundStats.entries, date : foundStats.date });
+        return res.status(200).json({ Success: 'Tracker details are sent', data });
 
     } catch (error) {
         console.error('Error getting Tracker:', error);
