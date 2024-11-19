@@ -2,7 +2,6 @@ const User = require("../models/User");
 const jwt = require('jsonwebtoken')
 
 const handleLogout = async (req, res) => {
-    // On client, also delete the accessToken
 
     const cookies = req.cookies
     if (!cookies || !cookies.jwt) return res.status(204).json({ 'message': 'Cookies not found' })
@@ -27,7 +26,8 @@ const handleLogout = async (req, res) => {
     return res.status(204).clearCookie('jwt', { 
         httpOnly: true,
         sameSite: 'None', // Set 'Secure' and 'SameSite' options properly in production 
-        secure: true })
+        secure: true 
+    }).json({ message: "Successfully logged out" })
 }
 
 module.exports = { handleLogout }
