@@ -24,8 +24,10 @@ const handleLogout = async (req, res) => {
     }).exec();
     if (!foundUser) return res.status(401).json({ message: 'User not found' });
 
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None' })
-    res.sendStatus(204)
+    return res.status(204).clearCookie('jwt', { 
+        httpOnly: true,
+        sameSite: 'None', // Set 'Secure' and 'SameSite' options properly in production 
+        secure: true })
 }
 
 module.exports = { handleLogout }
