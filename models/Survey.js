@@ -42,6 +42,9 @@ const surveySchema = new Schema ({
     cluster: {
         type: Number,
         default: -1
+    },
+    feedback: {
+        type: String,
     }
 })
 

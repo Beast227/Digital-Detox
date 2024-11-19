@@ -1,17 +1,16 @@
-const Tracker = require('../models/Tracker')
-const User = require('../models/User')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const UserActivity = require('../models/UserActivity');
 
-const handleProgressTrackerDetails = async (req, res) => {
+const handleUserStatsDetails = async (req, res) => {
     try {
         const cookies = req.cookies
         // Check if the user is logged in
         if (!cookies) return res.status(400).json({ message: 'Please login first' })
         const refreshToken = cookies.jwt
 
-        const { weeklyUsage, limitedUsage } = req.body
+        const { entries, date } = req.body
         // Validate if weeklyUsage is sent in the request body
-        if (!weeklyUsage) return res.status(400).json({ message: 'No data sent' })
+        if (!entries || !date) return res.status(400).json({ message: 'No data sent' })
 
         let _id
         jwt.verify(
@@ -24,36 +23,31 @@ const handleProgressTrackerDetails = async (req, res) => {
         )
 
         // Check if a Tracker already exists for the user
-        let existingTracker = await Tracker.findOne({ user: _id }).exec()
+        let exsistingDate = await UserActivity.findOne({ 
+            $and: { user: _id, date}
+        }).exec()
 
-        if (existingTracker) {
+        if (exsistingDate) {
             // If tracker exists, append new data to the existing arrays
-            existingTracker.weeklyUsage = [...existingTracker.weeklyUsage, weeklyUsage]
-        } else {
-            //Check weather the limitedUsage is sent or not
-            if (!limitedUsage) return res.status(400).json({ message: 'limitedUsage object not sent' })
-            // If no tracker exists, create a new one
-            existingTracker = new Tracker({
-                user: _id, // Link to the User ID
-                weeklyUsage: weeklyUsage,
-                limitedUsage: limitedUsage
-            });
+            return res.status(400).json({ message: "Already stored the information for this date" })
         }
 
-        // Save or update the Tracker in the database
-        const result = await existingTracker.save();
-        console.log(result);
+        await UserActivity.create({
+            user: _id,
+            entries,
+            date
+        }).exec()
 
         // Respond to the client
-        return res.status(200).json({ Success: 'Tracker details are saved' });
+        return res.status(200).json({ Success: 'Usage activity details are saved' });
 
     } catch (error) {
-        console.error('Error saving Tracker:', error);
+        console.error('Error saving Usage activity details:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
 
-const getTrackerDetails = async (req, res) => {
+const getUserStatsDetails = async (req, res) => {
     try {
         const cookies = req.cookies;
         // Check if the user is logged in
@@ -72,11 +66,11 @@ const getTrackerDetails = async (req, res) => {
         )
 
         // Check if a Tracker already exists for the user
-        const existingTracker = await Tracker.findOne({ user: _id }).exec()
-        if (!existingTracker) return res.status(400).json({ message: 'Tracker details not found' })
+        const foundStats = await UserActivity.findOne({ user: _id }).exec()
+        if (!foundStats) return res.status(400).json({ message: 'Tracker details not found' })
 
         // Respond to the client
-        return res.status(200).json({ Success: 'Tracker details are sent', existingTracker });
+        return res.status(200).json({ Success: 'Tracker details are sent', foundStats });
 
     } catch (error) {
         console.error('Error getting Tracker:', error);
@@ -84,7 +78,7 @@ const getTrackerDetails = async (req, res) => {
     }
 }
 
-const updateLimitedUsage = async (req, res) => {
+const updateUsageStats = async (req, res) => {
     try {
         const cookies = req.cookies;
         // Check if the user is logged in
@@ -102,14 +96,16 @@ const updateLimitedUsage = async (req, res) => {
             }
         )
 
-        const { limitedUsage } = req.body
-        if (!limitedUsage) return res.status(400).json({ message: 'limitedUsage object not sent to update' })
+        const { date, entries } = req.body
+        if (!entries || !date) return res.status(400).json({ message: 'limitedUsage object not sent to update' })
 
         // Check if a Tracker already exists for the user
-        const existingTracker = await Tracker.findOne({ user: _id });
-        if (!existingTracker) return res.status(400).json({ message: 'Tracker details not found' })
+        const foundStats = await UserActivity.findOne({ 
+            $and: { user: _id, date}
+        }).exec();
+        if (!foundStats) return res.status(400).json({ message: 'Tracker details not found' })
 
-        existingTracker.limitedUsage = limitedUsage
+        foundStats.entries = entries
         const result = await existingTracker.save()
         console.log(result)
 
@@ -121,4 +117,4 @@ const updateLimitedUsage = async (req, res) => {
     }
 }
 
-module.exports = { handleProgressTrackerDetails, getTrackerDetails, updateLimitedUsage };
+module.exports = { handleUserStatsDetails, getUserStatsDetails, updateUsageStats};
