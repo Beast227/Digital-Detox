@@ -45,6 +45,10 @@ const surveySchema = new Schema ({
     },
     feedback: {
         type: String,
+    },
+    limitedUsage: {
+        type: Number,
+        default: 7
     }
 })
 

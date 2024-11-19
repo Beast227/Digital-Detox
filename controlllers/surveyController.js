@@ -155,9 +155,79 @@ const updateSurvey = async (req, res) => {
 
     } catch (err) {
         console.error('Error getting survey details: ', err)
-        res.status(500).json({ message: 'server error' })
+        return res.status(500).json({ message: 'server error' })
     }
 }
 
 
-module.exports = { handleSurveyDetails, getSurveyDetails, updateSurvey }
+const getLimitedUsage = async (req, res) => {
+    try {
+
+        const cookies = req.cookies
+        // Checking weather user is logged in or not
+        if (!cookies) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
+
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
+
+        // Only one survey answers for one user
+        const foundSurvey = await Survey.findOne({ user: _id })
+        if (!foundSurvey) {
+            return res.status(401).json({ message: 'Your survey answer is not saved' })
+        }
+
+        return res.status(200).json({ message: "Limited usage detials is fetched", limitedUsage: foundSurvey.limitedUsage })
+
+    } catch (error) {
+        console.error('Error getting survey details: ', error)
+        return res.status(500).json({ message: 'server error' })
+    }
+}
+
+const updateLimitedUsage = async (req, res) => {
+    try {
+
+        const cookies = req.cookies
+        // Checking weather user is logged in or not
+        if (!cookies) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
+
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
+
+        const { limitedUsage } = req.body
+
+
+        // Only one survey answers for one user
+        const foundSurvey = await Survey.findOne({ user: _id })
+        if (!foundSurvey) {
+            return res.status(401).json({ message: 'Your survey answer is not saved' })
+        }
+
+        foundSurvey.limitedUsage = limitedUsage
+        await foundSurvey.save()
+
+        return res.status(200).json({ message: "Limited Usage updated successfully" })
+
+    } catch (error) {
+        console.error('Error getting survey details: ', error)
+        return res.status(500).json({ message: 'server error' })
+    }
+}
+
+module.exports = { handleSurveyDetails, getSurveyDetails, updateSurvey, getLimitedUsage, updateLimitedUsage }

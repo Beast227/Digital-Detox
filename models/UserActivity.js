@@ -27,9 +27,9 @@ const userActivitySchema = new mongoose.Schema({
     required: true,
   },
   entries: {
-    type: entrySchema, // Array of entries
+    type: [entrySchema], // Array of entries
     required: true,
-  },
+  }
 });
 
 // Create the model
