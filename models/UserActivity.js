@@ -19,7 +19,7 @@ const entrySchema = new mongoose.Schema({
 // Define the schema for the main document
 const userActivitySchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   date: {
@@ -27,7 +27,7 @@ const userActivitySchema = new mongoose.Schema({
     required: true,
   },
   entries: {
-    type: [entrySchema], // Array of entries
+    type: entrySchema, // Array of entries
     required: true,
   },
 });
