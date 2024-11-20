@@ -6,5 +6,6 @@ router
 .post('/', surveyController.handleSurveyDetails)
 .get('/', surveyController.getSurveyDetails)
 .put('/', surveyController.updateSurvey)
+.post('/feedback', surveyController.storeFeedback)
 
 module.exports = router

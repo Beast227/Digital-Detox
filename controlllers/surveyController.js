@@ -230,4 +230,40 @@ const updateLimitedUsage = async (req, res) => {
     }
 }
 
-module.exports = { handleSurveyDetails, getSurveyDetails, updateSurvey, getLimitedUsage, updateLimitedUsage }
+const storeFeedback = async(req, res) => {
+    try {
+        
+        const cookies = req.cookies
+        // Checking weather user is logged in or not
+        if (!cookies) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
+
+        const { feedback } = req.body
+
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
+
+        // Only one survey answers for one user
+        const foundSurvey = await Survey.findOne({ user: _id })
+        if (!foundSurvey) {
+            return res.status(401).json({ message: 'Survey not found' })
+        }
+
+        foundSurvey.feedback = feedback
+        await foundSurvey.save()
+
+        return res.status(200).json({ message: "Thank you for giving feedback." })
+
+    } catch (error) {
+        
+    }
+}
+
+module.exports = { handleSurveyDetails, getSurveyDetails, updateSurvey, getLimitedUsage, updateLimitedUsage, storeFeedback }
