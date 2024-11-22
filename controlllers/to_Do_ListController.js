@@ -167,4 +167,41 @@ const handleDeleteTask = async (req, res) => {
     }
 }
 
-module.exports = { handleAddTask, getTasks, handlecompletedTask, handleDeleteTask }
+const handleUpdateTask = async (req, res) => {
+    try {
+        const cookies = req.cookies
+        // Checking weather user is logged in or not
+        if (!cookies || !cookies.jwt) return res.status(400).json({ message: 'Please login first ' })
+        const refreshToken = cookies.jwt
+        const { old_task_name, new_task_name, new_due_date } = req.body
+        // Checking whether the data is sent or not
+        if (!old_task_name || !new_task_name || !new_due_date) return res.status(400).json({ message: 'Data not sent' })
+
+        let _id
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
+                _id = decoded.id
+            }
+        )
+
+        // Finding the task needed to be updated
+        const foundTask = await To_Do_list.findOneAndUpdate(
+            {task_name: old_task_name, user: _id},
+            { $set: { task_name: new_task_name, due_date: new_due_date }},
+            { new: true}
+        ).exec()
+        if (!foundTask) return res.status(400).json({ message: 'Task not found' })
+
+
+        return res.status(200).json({ message: 'Successfully updated the task' })
+
+    } catch (error) {
+        console.error('Error saving survey:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+}
+
+module.exports = { handleAddTask, getTasks, handlecompletedTask, handleDeleteTask, handleUpdateTask }

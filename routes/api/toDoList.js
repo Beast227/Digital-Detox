@@ -7,5 +7,6 @@ router
 .get('/', to_Do_ListController.getTasks)
 .put('/', to_Do_ListController.handlecompletedTask)
 .delete('/', to_Do_ListController.handleDeleteTask)
+.put('/update', to_Do_ListController.handleUpdateTask)
 
 module.exports = router
