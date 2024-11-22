@@ -1,29 +1,36 @@
 const User = require("../models/User");
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const bcrypt = require("bcrypt");
 
 const handleForgotPassword = async (req, res) => {
     const { username, email, newPassword } = req.body;
-    if( !newPassword?.trim() || !email?.trim() ) return res.status(400).json( { message : 'Email password and email are required.'} )
+
+    // Validate the incoming request body
+    if (!newPassword || !email || !username) {
+        return res.status(400).json({ message: "All fields are required." });
+    }
 
     try {
-        // Encrypt the password
-        const hashedPwd = await bcrypt.hash(newPassword, 10)
+        // Encrypt the new password
+        const hashedPwd = await bcrypt.hash(newPassword, 10);
 
-        // Update the password for the foundUser
-        const updatedUser = await User.findOneAndUpdate({
-            $and: [email, username],
-            $set: { password : hashedPwd }
-        })
-        if(!updatedUser) return res.status(401).json({ message : 'User not found' })
+        // Find the user by username and email, and update the password
+        const updatedUser = await User.findOneAndUpdate(
+            { username: username, email: email }, // Match the user by username and email
+            { $set: { password: hashedPwd } },   // Update the password field
+            { new: true }                        // Return the updated document
+        );
 
-        console.log(updatedUser)
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found." });
+        }
 
-        res.status(201).json({ success: `Password has been changed` });
-    } catch(err) {
-        console.error(err)
-        res.status(409).json({ message: err.message })
+        console.log("Updated User:", updatedUser);
+
+        res.status(200).json({ success: "Password has been changed." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "An error occurred. Please try again later." });
     }
-}
+};
 
-module.exports = { handleForgotPassword }
+module.exports = { handleForgotPassword };
