@@ -11,7 +11,7 @@ const handleAddTask = async (req, res) => {
 
         const { task_name, due_date, priority } = req.body
         // Checking whether the data is sent or not
-        if (!task_name || !due_date) return res.status(400).json({ message: 'Data not sent' })
+        if (!task_name) return res.status(400).json({ message: 'Data not sent' })
 
         let _id
         jwt.verify(
