@@ -9,11 +9,7 @@ const entrySchema = new mongoose.Schema({
   timeSpent: {
     type: Number, // Time spent in minutes
     required: true,
-  },
-  sessions: {
-    type: Number, // Number of sessions
-    required: true,
-  },
+  }
 });
 
 // Define the schema for the main document
