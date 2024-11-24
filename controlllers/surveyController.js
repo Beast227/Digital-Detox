@@ -30,7 +30,7 @@ const handleSurveyDetails = async (req, res) => {
 
         // Create new Survey
         const newSurvey = new Survey({
-            user: foundUser._id, // Link to the User ID
+            user: _id, // Link to the User ID
             responses: responses
         })
 
