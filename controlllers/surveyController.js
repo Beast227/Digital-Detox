@@ -70,6 +70,8 @@ const getSurveyDetails = async (req, res) => {
         }).exec()
         if (!foundSurvey) return res.status(400).json({ message: 'Survey is not available for this user' })
 
+        console.log(foundSurvey)
+
         if (foundSurvey.cluster === -1) {
             const payload = {
                 "input": {
