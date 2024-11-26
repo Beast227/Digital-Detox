@@ -9,5 +9,6 @@ router
 .put('/', userTrackerController.updateUsageStats)
 .get('/limit', surveyController.getLimitedUsage)
 .put('/limit', surveyController.updateLimitedUsage)
+.get('/dateRange', userTrackerController.getUserActivitiesBetweenDates)
 
 module.exports = router
