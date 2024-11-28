@@ -116,7 +116,7 @@ const handleGetUser = async (req, res) => {
 
         // Is User in db?
         const foundUser = await User.findOne({
-            _id: _id
+            _id
         }).exec();
         if (!foundUser) return res.status(401).json({ message: 'User not found' });
 
