@@ -8,6 +8,16 @@ const verifyJWT = require('./middlewares/verifyJWT')
 const cookieParser = require('cookie-parser')
 const credentials = require('./middlewares/credentials')
 const app = express()
+const admin = require("firebase-admin");
+const serviceAccount = require("./firebase_private_key.json");
+const overdueTaskNotifier = require('./routes/jobs/overdueTasksNotifier')
+
+
+// Connection with firebase
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+});
+
 
 // Connection with Mongodb
 connectDB()
@@ -51,3 +61,7 @@ mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')
     app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}`))
 })
+
+// Start the job
+console.log("Starting overdue task notifier...");
+overdueTaskNotifier.checkOverdueTasks();

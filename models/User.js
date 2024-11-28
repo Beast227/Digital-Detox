@@ -17,6 +17,10 @@ const userSchema = new Schema({
     createdAt:{
         type: Date,
         default: Date.now
+    },
+    firebaseUID: {
+        type: String,
+        required: true
     }
 })
 
