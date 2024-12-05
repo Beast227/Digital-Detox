@@ -17,7 +17,7 @@ const checkOverdueTasks = async () => {
             if (user && user.firebaseUID) {
                 // Iterate through user's FCM tokens
                 for (const token of user.fcmTokens) {
-                    const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+                    const response = await fetch("https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
