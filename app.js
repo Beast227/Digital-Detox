@@ -50,8 +50,8 @@ app.use('/logOutAllSessions', require('./routes/api/logOutAllSession'))
 app.use('/toDoList', require('./routes/api/toDoList'))
 app.use('/appLogin', require('./routes/api/appAuthRouter'))
 
-// verification with jwt
-app.use(verifyJWT)
+// // verification with jwt
+// app.use(verifyJWT)
 
 // Protected Routes
 
