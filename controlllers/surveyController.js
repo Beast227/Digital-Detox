@@ -164,35 +164,40 @@ const updateSurvey = async (req, res) => {
 
 const getLimitedUsage = async (req, res) => {
     try {
-
-        const cookies = req.cookies
-        // Checking weather user is logged in or not
-        if (!cookies) return res.status(400).json({ message: 'Please login first ' })
-        const refreshToken = cookies.jwt
-
-        let _id
-        jwt.verify(
-            refreshToken,
-            process.env.REFRESH_TOKEN_SECRET,
-            (err, decoded) => {
-                if (err) return res.status(403).json({ message: 'Invalid refresh token' })
-                _id = decoded.id
-            }
-        )
-
-        // Only one survey answers for one user
-        const foundSurvey = await Survey.findOne({ user: _id })
-        if (!foundSurvey) {
-            return res.status(401).json({ message: 'Your survey answer is not saved' })
+        const cookies = req.cookies;
+        // Checking whether user is logged in or not
+        if (!cookies) {
+            return res.status(400).json({ message: 'Please login first' });
         }
 
-        return res.status(200).json({ message: "Limited usage detials is fetched", limitedUsage: foundSurvey.limitedUsage })
+        const refreshToken = cookies.jwt;
+
+        // Validate the refresh token
+        let _id;
+        try {
+            const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+            _id = decoded.id;
+        } catch (err) {
+            return res.status(403).json({ message: 'Invalid refresh token' });
+        }
+
+        // Only one survey answer for one user
+        const foundSurvey = await Survey.findOne({ user: _id });
+        if (!foundSurvey) {
+            return res.status(401).json({ message: 'Your survey answer is not saved' });
+        }
+
+        // Successfully fetch limited usage details
+        return res.status(200).json({
+            message: "Limited usage details are fetched",
+            limitedUsage: foundSurvey.limitedUsage,
+        });
 
     } catch (error) {
-        console.error('Error getting survey details: ', error)
-        return res.status(500).json({ message: 'server error' })
+        console.error('Error getting survey details: ', error);
+        return res.status(500).json({ message: 'Server error' });
     }
-}
+};
 
 const updateLimitedUsage = async (req, res) => {
     try {
